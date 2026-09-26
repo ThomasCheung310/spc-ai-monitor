@@ -91,3 +91,10 @@ def detect_violations(spc_chart): #check spc chart base on Western Electric rule
 })
     return rule1 + rule2 + rule3 + rule4
 
+def spc_status(violations):
+    if (len(violations) == 1):
+        return "Monitor"
+    elif (len(violations) >= 2):
+        return "Attention"
+    else:
+        return "Stable"
