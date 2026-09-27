@@ -37,15 +37,17 @@ def get_ai_analysis(process, spc_chart, violations, process_metadata):
     cpk = spc_chart["Cpk"]
 
     #violations
-    violations_str = json.dumps(violations, default=str, indent=2)
+    #violations_str = json.dumps(violations, default=str, indent=2)
+    violations_str = json.dumps(violations[:5], default=str, indent=2)
     process_metadata_str = json.dumps(process_metadata, indent=2)
 
     response = client.chat.completions.create(model="openai/gpt-oss-120b", 
                                               temperature= 0.2,
                                 messages= [
-                                        {"role": "system", "content": "You are a process engineer for a semiconductor fab. You will be given violations and process meta data. For each violation, provide: \n 1. What likely caused this pattern \n 2. Suggested investigation steps"},
+                                        {"role": "system", "content": "You are a process engineer for a semiconductor fab. You will be given violations and process meta data. For each violation, respond in plain text in bullet points with organization, max 200 words and give: 1 sentence summary, 2 root causes, 2 action steps."},
                                         {"role": "user", "content": f"Process: {process_name} \n\n Chart Statistics: \n Mean: {mean}\n UCL: {ucl}\n LCL:\n{lcl}\n Cpu: {cpu}\n Cpl:\n{cpl}\n Cpk: {cpk}\n\n Detected Violations: {violations_str} \n\n Process Metadata: {process_metadata_str}"}]
     )
+
     return response.choices[0].message.content
     
     
