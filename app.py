@@ -58,7 +58,7 @@ process, process_metadata, spc_chart, violations, status = load_demo_data()
 def plot(spc_chart, violations, process_metadata):
     fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=spc_chart["Time"], y=spc_chart["Data"], mode="lines", name="Value"))
+    fig.add_trace(go.Scatter(x=spc_chart["Timestamp"], y=spc_chart["Value"], mode="lines", name="Value"))
 
     fig.add_hline(y=spc_chart["UCL"], line_dash="dash", line_color="red", annotation_text="UCL")
     fig.add_hline(y=spc_chart["LCL"], line_dash="dash", line_color="red", annotation_text="LCL")

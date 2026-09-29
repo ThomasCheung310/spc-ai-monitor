@@ -30,14 +30,14 @@ def generate_spc_chart(spc_data, usl, lsl):  #spc_data is a dictionary
     cpu = (usl - mean) / (3 * standard_deviation)
     cpk = min(cpl, cpu)
 
-    spc_chart = {"Time": timestamps, "Data": values, "Mean": mean, "Standard_deviation": standard_deviation, "UCL": ucl, "LCL": lcl, "Cpl": cpl, "Cpu": cpu, "Cpk": cpk}
+    spc_chart = {"Timestamp": timestamps, "Value": values, "Mean": mean, "Standard_deviation": standard_deviation, "UCL": ucl, "LCL": lcl, "Cpl": cpl, "Cpu": cpu, "Cpk": cpk}
     return spc_chart
 
 def detect_violations(spc_chart): #check spc chart base on Western Electric rule
     #zone_a: 2 sigma < y < 3 sigma
     #zone_b: 1 sigma < y < 2 sigma
     #sone_c: mean < y < 1 sigma
-    df = pd.DataFrame({"Timestamp": spc_chart["Time"], "Value": spc_chart["Data"]})
+    df = pd.DataFrame({"Timestamp": spc_chart["Timestamp"], "Value": spc_chart["Value"]})
 
     #rule 1
     rule1 = []
