@@ -6,7 +6,7 @@ Timestamp,Value,USL,LSL,Process,Tool,Temperature,Pressure,RF_Power
 2024-01-01 09:00,301.7,307,293,Wet Etch,Tool B,25C,1atm,0W
 2024-01-01 09:15,299.2,307,293,Wet Etch,Tool B,25C,1atm,0W
 2024-01-01 09:30,301.0,307,293,Wet Etch,Tool B,25C,1atm,0W
-2024-01-01 09:45,307.5,307,293,Wet Etch,Tool B,27C,1atm,0W
+2024-01-01 09:45,310,307,293,Wet Etch,Tool B,27C,1atm,0W
 2024-01-01 10:00,302.5,307,293,Wet Etch,Tool B,25C,1atm,0W
 2024-01-01 10:15,299.1,307,293,Wet Etch,Tool B,25C,1atm,0W
 2024-01-01 10:30,299.3,307,293,Wet Etch,Tool B,25C,1atm,0W
