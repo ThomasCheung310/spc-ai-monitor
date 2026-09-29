@@ -26,9 +26,8 @@ client = OpenAI(
             api_key = token,
         )
 
-def get_ai_analysis(process, spc_chart, violations, process_metadata):
+def get_ai_analysis(process_name, spc_chart, violations, process_metadata):
     #chart data
-    process_name = process
     mean = spc_chart["Mean"]
     ucl = spc_chart["UCL"]
     lcl = spc_chart["LCL"]
@@ -51,43 +50,3 @@ def get_ai_analysis(process, spc_chart, violations, process_metadata):
     return response.choices[0].message.content
     
     
-if __name__ == "__main__":
-    # dummy chart data
-    process = "CVD for silicon oxide"
-    spc_chart = {
-        "Mean": "10nm",
-        "UCL": "13nm",
-        "LCL": "7nm",
-        "Cpu": "1.3",
-        "Cpl": "0.6",
-        "Cpk": "0.6"
-    }
-
-    # dummy violations
-    violations = [
-        {"Timestamp": "2026-08-07, 06:30",
-        "Value": "14nm",
-        "Rule": "Rule 1: Point outside control limits"},
-        {"Timestamp": "2026-08-07, 13:40",
-        "Value": "11.2nm",
-        "Rule": "Rule 3: 4 out of 5 points beyond 1σ on same side"}
-    ]
-
-    # dummy process metadata
-    process_metadata = {"Parameter": "Film Thickness",
-    "Units": "nm",
-    "Target": 500,
-    "Process": "PECVD SiO2",
-    "RF_Power": "120 W",
-    "Pressure": "900 mTorr",
-    "SiH4_Flow": "100 sccm",
-    "N2O_Flow": "50 sccm",
-    "Temperature": "400 C",
-    "Deposition_Time": "60 s",
-    "Tool": "PECVD Tool A",
-    "Last_Maintenance": "2024-01-01"
-       
-    }
-
-    result = get_ai_analysis(process, spc_chart, violations, process_metadata)
-    print(result)

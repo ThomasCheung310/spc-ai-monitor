@@ -22,40 +22,38 @@ from ai import get_ai_analysis
 import datetime
 import plotly.graph_objects as go
 import plotly.express as px
+import os
+from data_loader import read_csv
+
 
 st.set_page_config(page_title="SPC AI Monitor", layout="wide")
 st.title("SPC AI Monitor")
 
-def load_demo_data():
-    process = "CVD for silicon oxide"
-    # simulate some data with a clear violation
-    process_metadata = {"Parameter": "Film Thickness",
-    "Units": "nm",
-    "Target": 500,
-    "Process": "PECVD SiO2",
-    "RF_Power": "120 W",
-    "Pressure": "900 mTorr",
-    "SiH4_Flow": "100 sccm",
-    "N2O_Flow": "50 sccm",
-    "Temperature": "400 C",
-    "Deposition_Time": "60 s",
-    "Tool": "PECVD Tool A",
-    "Last_Maintenance": "2024-01-01"
-       
-    }
+def load_charts():
+    data_folder = os.path.join(os.path.dirname(__file__), "data")
+    charts = []
 
-    data = {datetime.datetime(2024, 1, 1, 8, 0) + datetime.timedelta(minutes=i*15): 100 + i*0.5 for i in range(30)}
-    spc_chart = generate_spc_chart(data, usl=120, lsl=80)
+    for i in os.listdir(data_folder):
+        if i.endswith(".csv"):
+            file_path = os.path.join(data_folder, i)
+            spc_data, usl, lsl, process_metadata = read_csv(file_path)
+            process_name = process_metadata.get("Process", "Unknown Process")
+            
+            spc_chart = generate_spc_chart(spc_data, usl, lsl)
 
-    violations = detect_violations(spc_chart)
-    status = spc_status(violations)
+            violations = detect_violations(spc_chart)
+            status = spc_status(violations)
+            charts.append({
+                    "Process Name": process_name,
+                    "Process Metadata": process_metadata,
+                    "SPC Chart": spc_chart,
+                    "Violations": violations,
+                    "Status": status
+                        })
 
-    return process, process_metadata, spc_chart, violations, status
+    return charts
 
-
-process, process_metadata, spc_chart, violations, status = load_demo_data()
-
-def plot(spc_chart, violations, process_metadata):
+def plot(process_name, spc_chart, violations, process_metadata):
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(x=spc_chart["Timestamp"], y=spc_chart["Value"], mode="lines", name="Value"))
@@ -71,21 +69,31 @@ def plot(spc_chart, violations, process_metadata):
 
     if st.button("🤖 Analyze with AI"):
         with st.spinner("Analyzing..."):
-            analysis = get_ai_analysis(process, spc_chart, violations, process_metadata)
+
+            analysis = get_ai_analysis(process_name, spc_chart, violations, process_metadata)
             st.markdown(analysis)
 
-attention_count = 1 if status == "Attention" else 0
+
+charts = load_charts()
+attention_count = sum(1 for i in charts if i["Status"] == "Attention")
+monitor_count = sum(1 for i in charts if i["Status"] == "Monitor")
+stable_count = sum(1 for i in charts if i["Status"] == "Stable")
+
 with st.expander(f"⚠️ Attention ({attention_count})"):
-    if status == "Attention":
-        plot(spc_chart, violations, process_metadata)
+    for c in charts:
+        if c["Status"] == "Attention":
+            st.subheader(c["Process Name"])
+            plot(c["Process Name"], c["SPC Chart"], c["Violations"], c["Process Metadata"])
 
-attention_count = 1 if status == "Monitor" else 0
-with st.expander("💻 Monitor"):
-    if status == "Monitor":
-        plot(spc_chart, violations, process_metadata)
+with st.expander(f"💻 Monitor ({monitor_count})"):
+    for c in charts:
+        if c["Status"] == "Monitor":
+            st.subheader(c["Process Name"])
+            plot(c["Process Name"], c["SPC Chart"], c["Violations"], c["Process Metadata"])
 
-attention_count = 1 if status == "Stable" else 0
-with st.expander("✅ Stable"):
-    if status == "Stable":
-        plot(spc_chart, violations, process_metadata)
-
+with st.expander(f"✅ Stable ({stable_count})"):
+    for c in charts:
+        if c["Status"] == "Stable":
+            st.subheader(c["Process Name"])
+            plot(c["Process Name"], c["SPC Chart"], c["Violations"], c["Process Metadata"])
+            
