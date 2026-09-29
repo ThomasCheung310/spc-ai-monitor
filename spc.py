@@ -30,7 +30,7 @@ def generate_spc_chart(spc_data, usl, lsl):  #spc_data is a dictionary
     cpu = (usl - mean) / (3 * standard_deviation)
     cpk = min(cpl, cpu)
 
-    spc_chart = {"Timestamp": timestamps, "Value": values, "Mean": mean, "Standard_deviation": standard_deviation, "UCL": ucl, "LCL": lcl, "Cpl": cpl, "Cpu": cpu, "Cpk": cpk}
+    spc_chart = {"Timestamp": timestamps, "Value": values, "Mean": mean, "Standard_deviation": standard_deviation, "UCL": ucl, "LCL": lcl, "Cpl": cpl, "Cpu": cpu, "Cpk": cpk, "USL": usl, "LSL": lsl}
     return spc_chart
 
 def detect_violations(spc_chart): #check spc chart base on Western Electric rule

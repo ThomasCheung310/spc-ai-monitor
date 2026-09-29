@@ -28,6 +28,8 @@ from data_loader import read_csv
 
 st.set_page_config(page_title="SPC AI Monitor", layout="wide")
 st.title("SPC AI Monitor")
+if st.button("🔄 Refresh"):
+    st.rerun()
 
 def load_charts():
     data_folder = os.path.join(os.path.dirname(__file__), "data")
@@ -58,6 +60,8 @@ def plot(process_name, spc_chart, violations, process_metadata):
 
     fig.add_trace(go.Scatter(x=spc_chart["Timestamp"], y=spc_chart["Value"], mode="lines", name="Value"))
 
+    fig.add_hline(y=spc_chart["USL"], line_dash="dash", line_color="blue", annotation_text="USL")
+    fig.add_hline(y=spc_chart["LSL"], line_dash="dash", line_color="blue", annotation_text="LSL")
     fig.add_hline(y=spc_chart["UCL"], line_dash="dash", line_color="red", annotation_text="UCL")
     fig.add_hline(y=spc_chart["LCL"], line_dash="dash", line_color="red", annotation_text="LCL")
     fig.add_hline(y=spc_chart["Mean"], line_dash="dash", line_color="green", annotation_text="Mean")
@@ -67,7 +71,7 @@ def plot(process_name, spc_chart, violations, process_metadata):
     col2.metric("Violations", len(violations))
     st.plotly_chart(fig)
 
-    if st.button("🤖 Analyze with AI"):
+    if st.button("🤖 Analyze with AI", key=f"ai_btn_{process_name}"):
         with st.spinner("Analyzing..."):
 
             analysis = get_ai_analysis(process_name, spc_chart, violations, process_metadata)
