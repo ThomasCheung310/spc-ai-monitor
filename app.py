@@ -28,6 +28,7 @@ from data_loader import read_csv
 
 st.set_page_config(page_title="SPC AI Monitor", layout="wide")
 st.title("SPC AI Monitor")
+st.info("📊 This demo is running on simulated process data. In a production deployment, this app would connect to live fab data exports.")
 if st.button("🔄 Refresh"):
     st.rerun()
 
