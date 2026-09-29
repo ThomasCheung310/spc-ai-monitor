@@ -75,15 +75,16 @@ def plot(process_name, spc_chart, violations, process_metadata):
     button_key = f"ai_btn_{process_name}"
     result_key = f"ai_result_{process_name}"
 
-    if st.button("🤖 Analyze with AI", key=button_key):
-        with st.spinner("Analyzing..."):
-            analysis = get_ai_analysis(process_name, spc_chart, violations, process_metadata)
-            st.session_state[result_key] = analysis
-    
+    if len(violations) > 0:
+        if st.button("🤖 Analyze with AI", key=button_key):
+            with st.spinner("Analyzing..."):
+                analysis = get_ai_analysis(process_name, spc_chart, violations, process_metadata)
+                st.session_state[result_key] = analysis
         
-    if result_key in st.session_state:
-        st.info("⚠️ AI analysis is based on detected violations and process metadata. Validate with a process engineer before taking action.")
-        st.markdown(st.session_state[result_key])
+            
+        if result_key in st.session_state:
+            st.info("⚠️ AI analysis is based on detected violations and process metadata. Validate with a process engineer before taking action.")
+            st.markdown(st.session_state[result_key])
 
 
 charts = load_charts()
